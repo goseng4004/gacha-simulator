@@ -21,26 +21,29 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: var(--bg-main);
   color: var(--text-main);
+  width: 100%;
+  overflow-x: hidden;
 }
 
 /* =========================
-   레이아웃
+   레이아웃 (PC 기준)
 ========================= */
 .container {
   display: flex;
-  height: 100vh;
-  background: var(--bg-panel);
+  min-height: 100vh;
+  width: 100%;
 }
 
 .left-panel {
-  width: 38%;
+  flex: 0 0 38%;
   padding: 24px;
+  background: var(--bg-panel);
   border-right: 1px solid var(--border);
   overflow-y: auto;
 }
 
 .right-panel {
-  width: 62%;
+  flex: 1;
   padding: 24px;
   background: var(--bg-sub);
   overflow-y: auto;
@@ -182,7 +185,7 @@ button:hover {
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
-    height: auto;
+    min-height: auto;
   }
 
   .left-panel,
