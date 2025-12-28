@@ -93,16 +93,19 @@ function renderLogs() {
   logArea.innerHTML = "";
 
   Object.entries(logs).forEach(([date, entries]) => {
+    /* 날짜 + 로그 전체 묶음 */
+    const wrapper = document.createElement("div");
+
     /* 날짜 헤더 */
     const header = document.createElement("div");
     header.className = "date-divider collapsible";
     header.textContent = `▼ ${date}`;
 
-    /* 날짜별 로그 묶음 */
+    /* 로그 묶음 */
     const group = document.createElement("div");
     group.className = "log-group";
 
-    /* 접기 / 펼치기 */
+    /* 날짜 접기/펼치기 */
     header.onclick = () => {
       const closed = group.style.display === "none";
       group.style.display = closed ? "block" : "none";
@@ -120,7 +123,7 @@ function renderLogs() {
           .join("\n")}</pre>
       `;
 
-      /* 클릭 선택 */
+      /* 로그 클릭 선택 */
       bubble.onclick = () => {
         bubble.classList.toggle("selected");
       };
@@ -128,7 +131,8 @@ function renderLogs() {
       group.appendChild(bubble);
     });
 
-    logArea.append(header, group);
+    wrapper.append(header, group);
+    logArea.appendChild(wrapper);
   });
 }
 
