@@ -148,39 +148,73 @@ function renderStats() {
 
   const userStats = {};
 
-  Object.values(logs).forEach(dayLogs => {
-    dayLogs.forEach(entry => {
+  // 1. 데이터 재구성
+  Object.entries(logs).forEach(([date, entries]) => {
+    entries.forEach(entry => {
       if (!userStats[entry.user]) {
         userStats[entry.user] = {
           total: 0,
-          items: {}
+          dates: {}
         };
+      }
+
+      if (!userStats[entry.user].dates[date]) {
+        userStats[entry.user].dates[date] = {};
       }
 
       Object.entries(entry.results).forEach(([item, count]) => {
         userStats[entry.user].total += count;
-        userStats[entry.user].items[item] =
-          (userStats[entry.user].items[item] || 0) + count;
+
+        userStats[entry.user].dates[date][item] =
+          (userStats[entry.user].dates[date][item] || 0) + count;
       });
     });
   });
 
+  // 2. 렌더링
   Object.keys(userStats).forEach(user => {
     const box = document.createElement("div");
     box.className = "stats-user";
 
-    const name = document.createElement("div");
-    name.className = "stats-user-name";
-    name.textContent = `${user} (총 ${userStats[user].total}회)`;
+    const header = document.createElement("div");
+    header.className = "stats-header";
+    header.textContent = `${user} (총 ${userStats[user].total}회) ▶`;
 
-    const list = document.createElement("div");
-    list.className = "stats-list";
-    list.textContent = Object.entries(userStats[user].items)
-      .map(([k, v]) => `${k} x${v}`)
-      .join(", ");
+    const detail = document.createElement("div");
+    detail.className = "stats-detail";
 
-    box.appendChild(name);
-    box.appendChild(list);
+    // 날짜별 출력
+    Object.entries(userStats[user].dates).forEach(([date, items]) => {
+      const dateBlock = document.createElement("div");
+      dateBlock.style.marginBottom = "8px";
+
+      const dateTitle = document.createElement("div");
+      dateTitle.style.fontWeight = "bold";
+      dateTitle.style.fontSize = "13px";
+      dateTitle.textContent = date;
+
+      const itemList = document.createElement("div");
+      itemList.style.fontSize = "13px";
+      itemList.style.marginLeft = "10px";
+      itemList.innerHTML = Object.entries(items)
+        .map(([k, v]) => `${k} x${v}`)
+        .join("<br>");
+
+      dateBlock.appendChild(dateTitle);
+      dateBlock.appendChild(itemList);
+      detail.appendChild(dateBlock);
+    });
+
+    // 접기 / 펼치기
+    header.onclick = () => {
+      const open = detail.style.display === "block";
+      detail.style.display = open ? "none" : "block";
+      header.textContent =
+        `${user} (총 ${userStats[user].total}회) ${open ? "▶" : "▼"}`;
+    };
+
+    box.appendChild(header);
+    box.appendChild(detail);
     statsArea.appendChild(box);
   });
 }
