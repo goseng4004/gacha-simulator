@@ -93,7 +93,6 @@ function renderLogs() {
   logArea.innerHTML = "";
 
   Object.entries(logs).forEach(([date, entries]) => {
-    /* 날짜 + 로그 전체 묶음 */
     const wrapper = document.createElement("div");
 
     /* 날짜 헤더 */
@@ -101,11 +100,10 @@ function renderLogs() {
     header.className = "date-divider collapsible";
     header.textContent = `▼ ${date}`;
 
-    /* 로그 묶음 */
+    /* 로그 그룹 */
     const group = document.createElement("div");
     group.className = "log-group";
 
-    /* 날짜 접기/펼치기 */
     header.onclick = () => {
       const closed = group.style.display === "none";
       group.style.display = closed ? "block" : "none";
@@ -116,26 +114,29 @@ function renderLogs() {
       const bubble = document.createElement("div");
       bubble.className = "chat-bubble";
 
-  // ★ 삭제용 정보 다시 심기
       bubble.dataset.date = date;
       bubble.dataset.index = idx;
-      
+
       bubble.innerHTML = `
         <div class="chat-user">${e.user}</div>
         <pre>${Object.entries(e.results)
-               .map(([k, v]) => `${k} x${v}`)
-               .join("\n")}</pre>
+          .map(([k, v]) => `${k} x${v}`)
+          .join("\n")}</pre>
       `;
 
-  // 클릭 시 선택
       bubble.onclick = () => {
         bubble.classList.toggle("selected");
       };
-      
-      group.appendChild(bubble);
-});
 
+      group.appendChild(bubble);
+    });
+
+    wrapper.appendChild(header);
+    wrapper.appendChild(group);
+    logArea.appendChild(wrapper);
+  });
 }
+
 
 
 /* ---------- 로그 삭제 ---------- */
