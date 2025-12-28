@@ -50,7 +50,7 @@ body {
 }
 
 /* =========================
-   헤더 (결과 로그 + 삭제 버튼)
+   결과 로그 헤더
 ========================= */
 .log-header {
   position: sticky;
@@ -58,12 +58,21 @@ body {
   z-index: 10;
 
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 
   background: var(--bg-sub);
   padding-bottom: 12px;
   margin-bottom: 16px;
+}
+
+/* 결과 로그 제목 깨짐 방지 */
+.log-header h1 {
+  margin: 0;
+  font-size: 22px;
+  white-space: nowrap;
+  word-break: keep-all;
 }
 
 /* =========================
@@ -81,7 +90,7 @@ h2 {
   border-bottom: 1px solid var(--border);
 }
 
-/* 통계 패널 내부 h2 공백 정리 */
+/* 사람별 통계 타이틀 공백 정리 */
 .stats-panel h2 {
   margin: 0 0 8px;
   padding-bottom: 6px;
@@ -102,7 +111,6 @@ input {
 button {
   padding: 8px 12px;
   margin-top: 6px;
-  margin-right: 6px;
   border: 1px solid #333;
   background: #fff;
   border-radius: 4px;
@@ -145,6 +153,7 @@ button:hover {
   gap: 8px;
 }
 
+/* 날짜 헤더 */
 .date-divider {
   text-align: center;
   font-size: 13px;
@@ -152,16 +161,32 @@ button:hover {
   margin: 20px 0 12px;
 }
 
-/* 채팅 버블 */
+/* 접기 가능 날짜 */
+.date-divider.collapsible {
+  cursor: pointer;
+  user-select: none;
+  font-weight: bold;
+}
+
+/* 날짜별 로그 묶음 */
+.log-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+/* =========================
+   채팅형 로그 버블
+========================= */
 .chat-bubble {
-  position: relative;
   width: 100%;
   max-width: 100%;
 
   background: var(--bg-panel);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 10px 12px 10px 28px;
+  padding: 10px 12px;
   cursor: pointer;
 }
 
@@ -183,11 +208,9 @@ button:hover {
   white-space: pre-wrap;
 }
 
-/* 체크박스 */
+/* ✅ 체크박스 완전 제거 */
 .chat-bubble input[type="checkbox"] {
-  position: absolute;
-  left: 8px;
-  top: 10px;
+  display: none;
 }
 
 /* =========================
@@ -201,10 +224,6 @@ button:hover {
   border-radius: var(--radius);
 }
 
-.stats-user {
-  margin-bottom: 12px;
-}
-
 .stats-header {
   cursor: pointer;
   font-weight: bold;
@@ -215,7 +234,6 @@ button:hover {
   display: none;
   margin-left: 10px;
   font-size: 13px;
-  color: var(--text-main);
 }
 
 /* =========================
@@ -232,19 +250,18 @@ button:hover {
     border-right: none;
   }
 
+  /* 결과 로그 제목 + 버튼 세로 배치 */
+  .log-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .log-header h1 {
+    font-size: 18px;
+    text-align: left;
+  }
+
   button {
     width: 100%;
-    margin-right: 0;
   }
-}
-
-/* ---------- 로그 날짜 접기 ---------- */
-.date-divider.collapsible {
-  cursor: pointer;
-  user-select: none;
-  font-weight: bold;
-}
-
-.log-group {
-  margin-bottom: 20px;
 }
