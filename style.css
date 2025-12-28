@@ -50,6 +50,23 @@ body {
 }
 
 /* =========================
+   메인 타이틀 + 만든이
+========================= */
+.main-title {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.main-title .author {
+  font-size: 13px;
+  color: var(--text-sub);
+  font-weight: normal;
+  white-space: nowrap;
+}
+
+/* =========================
    결과 로그 헤더
 ========================= */
 .log-header {
@@ -67,12 +84,10 @@ body {
   margin-bottom: 16px;
 }
 
-/* 결과 로그 제목 깨짐 방지 */
 .log-header h1 {
   margin: 0;
   font-size: 22px;
   white-space: nowrap;
-  word-break: keep-all;
 }
 
 /* =========================
@@ -161,7 +176,6 @@ button:hover {
   margin: 20px 0 12px;
 }
 
-/* 접기 가능 날짜 */
 .date-divider.collapsible {
   cursor: pointer;
   user-select: none;
@@ -181,8 +195,6 @@ button:hover {
 ========================= */
 .chat-bubble {
   width: 100%;
-  max-width: 100%;
-
   background: var(--bg-panel);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -190,7 +202,6 @@ button:hover {
   cursor: pointer;
 }
 
-/* 선택된 로그 */
 .chat-bubble.selected {
   background: #f0f0f0;
   border-color: #222;
@@ -206,11 +217,6 @@ button:hover {
   margin: 0;
   font-size: 13px;
   white-space: pre-wrap;
-}
-
-/* ✅ 체크박스 완전 제거 */
-.chat-bubble input[type="checkbox"] {
-  display: none;
 }
 
 /* =========================
@@ -250,15 +256,24 @@ button:hover {
     border-right: none;
   }
 
-  /* 결과 로그 제목 + 버튼 세로 배치 */
+  /* 🔥 모바일에서 제목 줄바꿈 허용 */
+  .log-header h1 {
+    white-space: normal;
+    word-break: keep-all;
+  }
+
+  .main-title {
+    gap: 4px;
+  }
+
+  .main-title .author {
+    font-size: 12px;
+  }
+
+  /* 로그 헤더 세로 정렬 */
   .log-header {
     flex-direction: column;
     align-items: stretch;
-  }
-
-  .log-header h1 {
-    font-size: 18px;
-    text-align: left;
   }
 
   button {
