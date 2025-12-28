@@ -1,35 +1,38 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>갓챠 시뮬레이터</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Gacha System</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div class="container">
+    <!-- 관리창 -->
+    <div class="left-panel">
+      <h1>갓챠 관리</h1>
 
-<h1>🎰 갓챠 시뮬레이터</h1>
+      <h2>상품 관리</h2>
+      <input id="itemName" placeholder="상품명" />
+      <input id="itemRate" type="number" placeholder="확률 (%)" />
+      <button onclick="addItem()">추가</button>
+      <button onclick="updateItem()">수정</button>
+      <button onclick="deleteItem()">삭제</button>
 
-<section>
-  <h2>상품 관리</h2>
+      <ul id="itemList"></ul>
 
-  <input id="itemName" placeholder="상품명">
-  <input id="itemProb" placeholder="확률">
+      <h2>갓챠 실행</h2>
+      <input id="userName" placeholder="이름" />
+      <input id="drawCount" type="number" value="1" />
+      <button onclick="runGacha()">돌리기</button>
+    </div>
 
-  <button onclick="addItem()">추가</button>
-  <button onclick="updateItem()">수정</button>
-  <button onclick="deleteItem()">삭제</button>
+    <!-- 로그 -->
+    <div class="right-panel">
+      <h1>결과 로그</h1>
+      <div id="logArea"></div>
+    </div>
+  </div>
 
-  <ul id="itemList"></ul>
-</section>
-
-<section>
-  <h2>갓챠 돌리기</h2>
-  <input id="userName" placeholder="이름">
-  <input id="rollCount" type="number" value="1">
-  <button onclick="rollGacha()">돌리기</button>
-  <div id="result"></div>
-</section>
-
-<script src="gacha.js"></script>
+  <script src="gacha.js"></script>
 </body>
 </html>
