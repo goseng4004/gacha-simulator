@@ -108,6 +108,8 @@ function runGacha() {
 
   saveLogs();
   renderLogs();
+  renderStats();
+
 }
 
 /* ---------- 로그 ---------- */
@@ -139,6 +141,51 @@ function renderLogs() {
     });
   });
 }
+
+/* ---------- 통계 ---------- */
+function renderStats() {
+  statsArea.innerHTML = "";
+
+  const userStats = {};
+
+  Object.values(logs).forEach(dayLogs => {
+    dayLogs.forEach(entry => {
+      if (!userStats[entry.user]) {
+        userStats[entry.user] = {
+          total: 0,
+          items: {}
+        };
+      }
+
+      Object.entries(entry.results).forEach(([item, count]) => {
+        userStats[entry.user].total += count;
+        userStats[entry.user].items[item] =
+          (userStats[entry.user].items[item] || 0) + count;
+      });
+    });
+  });
+
+  Object.keys(userStats).forEach(user => {
+    const box = document.createElement("div");
+    box.className = "stats-user";
+
+    const name = document.createElement("div");
+    name.className = "stats-user-name";
+    name.textContent = `${user} (총 ${userStats[user].total}회)`;
+
+    const list = document.createElement("div");
+    list.className = "stats-list";
+    list.textContent = Object.entries(userStats[user].items)
+      .map(([k, v]) => `${k} x${v}`)
+      .join(", ");
+
+    box.appendChild(name);
+    box.appendChild(list);
+    statsArea.appendChild(box);
+  });
+}
+
 /* ---------- 초기화 ---------- */
 renderItems();
 renderLogs();
+renderStats();
