@@ -95,15 +95,16 @@ function renderLogs() {
   Object.entries(logs).forEach(([date, entries]) => {
     const wrapper = document.createElement("div");
 
-    /* 날짜 헤더 */
+    // 날짜 헤더
     const header = document.createElement("div");
     header.className = "date-divider collapsible";
     header.textContent = `▼ ${date}`;
 
-    /* 로그 그룹 */
+    // 로그 그룹
     const group = document.createElement("div");
     group.className = "log-group";
 
+    // 날짜 접기/펼치기
     header.onclick = () => {
       const closed = group.style.display === "none";
       group.style.display = closed ? "block" : "none";
@@ -136,7 +137,6 @@ function renderLogs() {
     logArea.appendChild(wrapper);
   });
 }
-
 
 
 /* ---------- 로그 삭제 ---------- */
