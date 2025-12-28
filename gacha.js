@@ -1,105 +1,128 @@
-const itemsKey = "gachaItems";
+let items = JSON.parse(localStorage.getItem("gachaItems")) || [];
+let logs = JSON.parse(localStorage.getItem("gachaLogs")) || {};
 let selectedIndex = null;
 
-// ---------- 저장 / 불러오기 ----------
-function loadItems() {
-  return JSON.parse(localStorage.getItem(itemsKey)) || [];
+const itemList = document.getElementById("itemList");
+const logArea = document.getElementById("logArea");
+
+function saveItems() {
+  localStorage.setItem("gachaItems", JSON.stringify(items));
 }
 
-function saveItems(items) {
-  localStorage.setItem(itemsKey, JSON.stringify(items));
+function saveLogs() {
+  localStorage.setItem("gachaLogs", JSON.stringify(logs));
 }
 
-// ---------- 상품 추가 ----------
-function addItem() {
-  const name = document.getElementById("itemName").value;
-  const prob = parseFloat(document.getElementById("itemProb").value);
+/* ---------- 상품 관리 ---------- */
 
-  if (!name || isNaN(prob)) {
-    alert("상품명과 확률을 입력하세요");
-    return;
-  }
-
-  const items = loadItems();
-  items.push({ name, prob });
-  saveItems(items);
-  clearInputs();
-  renderItems();
-}
-
-// ---------- 상품 선택 ----------
-function selectItem(index) {
-  const item = loadItems()[index];
-  selectedIndex = index;
-
-  document.getElementById("itemName").value = item.name;
-  document.getElementById("itemProb").value = item.prob;
-}
-
-// ---------- 상품 수정 ----------
-function updateItem() {
-  if (selectedIndex === null) {
-    alert("수정할 상품을 선택하세요");
-    return;
-  }
-
-  const items = loadItems();
-  items[selectedIndex].name =
-    document.getElementById("itemName").value;
-  items[selectedIndex].prob =
-    parseFloat(document.getElementById("itemProb").value);
-
-  saveItems(items);
-  clearInputs();
-  renderItems();
-}
-
-// ---------- 상품 삭제 ----------
-function deleteItem() {
-  if (selectedIndex === null) {
-    alert("삭제할 상품을 선택하세요");
-    return;
-  }
-
-  const items = loadItems();
-  items.splice(selectedIndex, 1);
-  saveItems(items);
-  clearInputs();
-  renderItems();
-}
-
-// ---------- 리스트 출력 ----------
 function renderItems() {
-  const list = document.getElementById("itemList");
-  list.innerHTML = "";
-
-  const items = loadItems();
-
+  itemList.innerHTML = "";
   items.forEach((item, index) => {
     const li = document.createElement("li");
-
-    li.textContent = `${item.name} (${item.prob}%)`;
-    li.style.cursor = "pointer"; // 👈 클릭 가능 표시
-
-    li.onclick = function () {
-      selectItem(index);
-    };
-
-    if (index === selectedIndex) {
-      li.style.fontWeight = "bold";
-      li.style.color = "blue";
-    }
-
-    list.appendChild(li);
+    li.textContent = `${item.name} (${item.rate}%)`;
+    li.onclick = () => selectItem(index);
+    if (index === selectedIndex) li.classList.add("selected");
+    itemList.appendChild(li);
   });
 }
 
-// ---------- 유틸 ----------
-function clearInputs() {
-  document.getElementById("itemName").value = "";
-  document.getElementById("itemProb").value = "";
-  selectedIndex = null;
+function selectItem(index) {
+  selectedIndex = index;
+  document.getElementById("itemName").value = items[index].name;
+  document.getElementById("itemRate").value = items[index].rate;
+  renderItems();
 }
 
-// ---------- 초기 실행 ----------
+function addItem() {
+  const name = itemName.value.trim();
+  const rate = Number(itemRate.value);
+  if (!name || rate <= 0) return;
+
+  items.push({ name, rate });
+  saveItems();
+  renderItems();
+}
+
+function updateItem() {
+  if (selectedIndex === null) return;
+  items[selectedIndex].name = itemName.value;
+  items[selectedIndex].rate = Number(itemRate.value);
+  saveItems();
+  renderItems();
+}
+
+function deleteItem() {
+  if (selectedIndex === null) return;
+  items.splice(selectedIndex, 1);
+  selectedIndex = null;
+  saveItems();
+  renderItems();
+}
+
+/* ---------- 갓챠 ---------- */
+
+function pickItem() {
+  const total = items.reduce((s, i) => s + i.rate, 0);
+  let r = Math.random() * total;
+  for (let item of items) {
+    if (r < item.rate) return item.name;
+    r -= item.rate;
+  }
+}
+
+function runGacha() {
+  const user = userName.value.trim();
+  const count = Number(drawCount.value);
+  if (!user || count <= 0 || items.length === 0) return;
+
+  const date = new Date().toISOString().split("T")[0];
+  if (!logs[date]) logs[date] = {};
+  if (!logs[date][user]) logs[date][user] = [];
+
+  const results = {};
+  for (let i = 0; i < count; i++) {
+    const result = pickItem();
+    results[result] = (results[result] || 0) + 1;
+    logs[date][user].push(result);
+  }
+
+  saveLogs();
+  renderLogs();
+}
+
+/* ---------- 로그 ---------- */
+
+function renderLogs() {
+  logArea.innerHTML = "";
+  Object.keys(logs).forEach(date => {
+    const d = document.createElement("div");
+    d.className = "date-divider";
+    d.textContent = date;
+    logArea.appendChild(d);
+
+    Object.keys(logs[date]).forEach(user => {
+      const bubble = document.createElement("div");
+      bubble.className = "chat-bubble";
+
+      const u = document.createElement("div");
+      u.className = "chat-user";
+      u.textContent = user;
+
+      const p = document.createElement("pre");
+      const counts = {};
+      logs[date][user].forEach(r => counts[r] = (counts[r] || 0) + 1);
+      p.textContent = Object.entries(counts)
+        .map(([k, v]) => v > 1 ? `${k} x${v}` : k)
+        .join("\n");
+
+      bubble.appendChild(u);
+      bubble.appendChild(p);
+      logArea.appendChild(bubble);
+    });
+  });
+}
+
+/* ---------- 초기화 ---------- */
+
 renderItems();
+renderLogs();
