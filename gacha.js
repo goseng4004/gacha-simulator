@@ -125,14 +125,22 @@ function renderLogs() {
   logArea.innerHTML = "";
 
   Object.keys(logs).forEach(date => {
+    if (!Array.isArray(logs[date])) return;
+
     const d = document.createElement("div");
     d.className = "date-divider";
     d.textContent = date;
     logArea.appendChild(d);
 
-    logs[date].forEach(entry => {
+    logs[date].forEach((entry, index) => {
       const bubble = document.createElement("div");
       bubble.className = "chat-bubble";
+
+      // 체크박스
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.dataset.date = date;
+      checkbox.dataset.index = index;
 
       const u = document.createElement("div");
       u.className = "chat-user";
@@ -143,11 +151,39 @@ function renderLogs() {
         .map(([k, v]) => v > 1 ? `${k} x${v}` : k)
         .join("\n");
 
+      bubble.appendChild(checkbox);
       bubble.appendChild(u);
       bubble.appendChild(p);
       logArea.appendChild(bubble);
     });
   });
+}
+/* ---------- 로그 삭제 ---------- */
+function deleteSelectedLogs() {
+  const checked = document.querySelectorAll(
+    '#logArea input[type="checkbox"]:checked'
+  );
+
+  if (checked.length === 0) return;
+
+  checked.forEach(cb => {
+    const date = cb.dataset.date;
+    const index = Number(cb.dataset.index);
+
+    if (Array.isArray(logs[date])) {
+      logs[date][index] = null; // 표시용 삭제
+    }
+  });
+
+  // null 제거
+  Object.keys(logs).forEach(date => {
+    logs[date] = logs[date].filter(e => e !== null);
+    if (logs[date].length === 0) delete logs[date];
+  });
+
+  saveLogs();
+  renderLogs();
+  renderStats();
 }
 
 /* ---------- 통계 ---------- */
