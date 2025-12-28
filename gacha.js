@@ -94,6 +94,8 @@ function pickItem() {
 }
 
 function runGacha() {
+  alert("runGacha 실행됨"); 
+  console.log("runGacha 실행됨");
   const user = userName.value.trim();
   const count = Number(drawCount.value);
 
