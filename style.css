@@ -140,3 +140,14 @@ pre {
   color: #333;
 }
 
+.chat-bubble {
+  position: relative;
+  padding-left: 24px;
+}
+
+.chat-bubble input[type="checkbox"] {
+  position: absolute;
+  left: 6px;
+  top: 10px;
+}
+
