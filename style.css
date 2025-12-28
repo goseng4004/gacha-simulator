@@ -1,3 +1,17 @@
+/* =========================
+   공통 설정 & 변수
+========================= */
+:root {
+  --bg-main: #f5f5f5;
+  --bg-panel: #ffffff;
+  --bg-sub: #fafafa;
+  --border: #ddd;
+  --text-main: #222;
+  --text-sub: #666;
+  --radius: 6px;
+  --gap: 16px;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -5,32 +19,36 @@
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: #f5f5f5;
-  color: #222;
+  background: var(--bg-main);
+  color: var(--text-main);
 }
 
+/* =========================
+   레이아웃
+========================= */
 .container {
   display: flex;
   height: 100vh;
-  background: #fff;
+  background: var(--bg-panel);
 }
 
-/* 좌측 */
 .left-panel {
   width: 38%;
   padding: 24px;
-  border-right: 1px solid #ddd;
+  border-right: 1px solid var(--border);
   overflow-y: auto;
 }
 
-/* 우측 */
 .right-panel {
   width: 62%;
   padding: 24px;
-  background: #fafafa;
+  background: var(--bg-sub);
   overflow-y: auto;
 }
 
+/* =========================
+   타이틀
+========================= */
 h1 {
   font-size: 22px;
   margin-bottom: 20px;
@@ -39,22 +57,25 @@ h1 {
 h2 {
   font-size: 16px;
   margin: 24px 0 12px;
-  border-bottom: 1px solid #e0e0e0;
   padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
 }
 
+/* =========================
+   입력 / 버튼
+========================= */
 input {
   width: 100%;
   padding: 8px 10px;
   margin-bottom: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border);
   border-radius: 4px;
 }
 
 button {
   padding: 8px 12px;
-  margin-right: 6px;
   margin-top: 6px;
+  margin-right: 6px;
   border: 1px solid #333;
   background: #fff;
   border-radius: 4px;
@@ -66,6 +87,9 @@ button:hover {
   color: #fff;
 }
 
+/* =========================
+   상품 리스트
+========================= */
 #itemList {
   list-style: none;
   padding: 0;
@@ -74,7 +98,7 @@ button:hover {
 
 #itemList li {
   padding: 8px 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border);
   border-radius: 4px;
   margin-bottom: 6px;
   cursor: pointer;
@@ -85,42 +109,54 @@ button:hover {
   border-color: #222;
 }
 
+/* =========================
+   로그 영역 (채팅형)
+========================= */
 .date-divider {
   text-align: center;
   font-size: 13px;
-  color: #777;
+  color: var(--text-sub);
   margin: 24px 0 16px;
 }
 
 .chat-bubble {
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  padding: 10px 12px;
+  position: relative;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px 10px 26px;
   margin-bottom: 10px;
   max-width: 75%;
 }
 
 .chat-user {
   font-weight: bold;
+  font-size: 13px;
   margin-bottom: 4px;
-  font-size: 13px;
 }
 
-pre {
+.chat-bubble pre {
   margin: 0;
-  white-space: pre-wrap;
   font-size: 13px;
+  white-space: pre-wrap;
 }
 
-/* ===== 사람별 통계 패널 ===== */
+/* 체크박스 */
+.chat-bubble input[type="checkbox"] {
+  position: absolute;
+  left: 6px;
+  top: 10px;
+}
 
+/* =========================
+   통계 패널
+========================= */
 .stats-panel {
   margin-bottom: 24px;
   padding: 16px;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
 }
 
 .stats-user {
@@ -137,17 +173,30 @@ pre {
   display: none;
   margin-left: 10px;
   font-size: 13px;
-  color: #333;
+  color: var(--text-main);
 }
 
-.chat-bubble {
-  position: relative;
-  padding-left: 24px;
-}
+/* =========================
+   모바일 반응형
+========================= */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    height: auto;
+  }
 
-.chat-bubble input[type="checkbox"] {
-  position: absolute;
-  left: 6px;
-  top: 10px;
-}
+  .left-panel,
+  .right-panel {
+    width: 100%;
+    border-right: none;
+  }
 
+  .chat-bubble {
+    max-width: 100%;
+  }
+
+  button {
+    width: 100%;
+    margin-right: 0;
+  }
+}
