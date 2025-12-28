@@ -73,12 +73,18 @@ function renderItems() {
   const list = document.getElementById("itemList");
   list.innerHTML = "";
 
-  loadItems().forEach((item, index) => {
-    const li = document.createElement("li");
-    li.textContent = `${item.name} (${item.prob}%)`;
-    li.onclick = () => selectItem(index);
+  const items = loadItems();
 
-    // 선택 강조
+  items.forEach((item, index) => {
+    const li = document.createElement("li");
+
+    li.textContent = `${item.name} (${item.prob}%)`;
+    li.style.cursor = "pointer"; // 👈 클릭 가능 표시
+
+    li.onclick = function () {
+      selectItem(index);
+    };
+
     if (index === selectedIndex) {
       li.style.fontWeight = "bold";
       li.style.color = "blue";
