@@ -92,19 +92,18 @@ function runGacha() {
   const user = userName.value.trim();
   const count = Number(drawCount.value);
 
-  if (!user || count <= 0 || items.length === 0) {
-    alert("이름 / 횟수 / 상품을 확인해줘!");
-    return;
-  }
+  if (!user || count <= 0 || items.length === 0) return;
 
   const date = new Date().toISOString().split("T")[0];
-  if (!logs[date]) logs[date] = {};
-  if (!logs[date][user]) logs[date][user] = [];
+  if (!logs[date]) logs[date] = [];
 
+  const results = {};
   for (let i = 0; i < count; i++) {
-    const result = pickItem();
-    logs[date][user].push(result);
+    const r = pickItem();
+    results[r] = (results[r] || 0) + 1;
   }
+
+  logs[date].push({ user, results });
 
   saveLogs();
   renderLogs();
@@ -120,23 +119,17 @@ function renderLogs() {
     d.textContent = date;
     logArea.appendChild(d);
 
-    Object.keys(logs[date]).forEach(user => {
+    logs[date].forEach(entry => {
       const bubble = document.createElement("div");
       bubble.className = "chat-bubble";
 
       const u = document.createElement("div");
       u.className = "chat-user";
-      u.textContent = user;
+      u.textContent = entry.user;
 
       const p = document.createElement("pre");
-      const counts = {};
-
-      logs[date][user].forEach(r => {
-        counts[r] = (counts[r] || 0) + 1;
-      });
-
-      p.textContent = Object.entries(counts)
-        .map(([k, v]) => (v > 1 ? `${k} x${v}` : k))
+      p.textContent = Object.entries(entry.results)
+        .map(([k, v]) => v > 1 ? `${k} x${v}` : k)
         .join("\n");
 
       bubble.appendChild(u);
@@ -145,7 +138,6 @@ function renderLogs() {
     });
   });
 }
-
 /* ---------- 초기화 ---------- */
 renderItems();
 renderLogs();
