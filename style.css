@@ -203,3 +203,21 @@ button:hover {
     margin-right: 0;
   }
 }
+
+
+/* =========================
+   PC 레이아웃 강제 안정화
+========================= */
+.right-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.stats-panel,
+#logArea {
+  width: 100%;
+}
+
+#logArea {
+  display: block;
+}
