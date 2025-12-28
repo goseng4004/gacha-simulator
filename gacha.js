@@ -81,12 +81,16 @@ function deleteItem() {
 /* ---------- 갓챠 ---------- */
 function pickItem() {
   const total = items.reduce((sum, i) => sum + i.rate, 0);
+  if (total <= 0) return null;
+
   let r = Math.random() * total;
 
   for (let item of items) {
     if (r < item.rate) return item.name;
     r -= item.rate;
   }
+
+  return null;
 }
 
 function runGacha() {
@@ -101,8 +105,10 @@ function runGacha() {
   const results = {};
   for (let i = 0; i < count; i++) {
     const r = pickItem();
+    if (!r) continue;   // ★ 이 줄 중요
     results[r] = (results[r] || 0) + 1;
   }
+
 
   logs[date].push({ user, results });
 
