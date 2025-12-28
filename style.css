@@ -112,3 +112,31 @@ pre {
   white-space: pre-wrap;
   font-size: 13px;
 }
+
+/* ===== 사람별 통계 패널 ===== */
+
+.stats-panel {
+  margin-bottom: 24px;
+  padding: 16px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.stats-user {
+  margin-bottom: 14px;
+}
+
+.stats-header {
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.stats-detail {
+  display: none;
+  margin-left: 10px;
+  font-size: 13px;
+  color: #333;
+}
+
