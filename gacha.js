@@ -98,30 +98,22 @@ function renderLogs() {
     d.textContent = date;
     logArea.appendChild(d);
 
-    entries.forEach((e, idx) => {
+    entries.forEach((e) => {
       const bubble = document.createElement("div");
       bubble.className = "chat-bubble";
 
-      const cb = document.createElement("input");
-      cb.type = "checkbox";
-      cb.dataset.date = date;
-      cb.dataset.index = idx;
+      bubble.innerHTML = `
+        <div class="chat-user">${e.user}</div>
+        <pre>${Object.entries(e.results)
+          .map(([k, v]) => `${k} x${v}`)
+          .join("\n")}</pre>
+      `;
 
-      cb.onchange = () =>
-        bubble.classList.toggle("selected", cb.checked);
+      // 클릭으로 선택 토글
+      bubble.addEventListener("click", () => {
+        bubble.classList.toggle("selected");
+      });
 
-      bubble.onclick = (ev) => {
-        if (ev.target.tagName === "INPUT") return;
-        cb.checked = !cb.checked;
-        bubble.classList.toggle("selected", cb.checked);
-      };
-
-      bubble.innerHTML += `<div class="chat-user">${e.user}</div>`;
-      bubble.innerHTML += `<pre>${Object.entries(e.results)
-        .map(([k, v]) => `${k} x${v}`)
-        .join("\n")}</pre>`;
-
-      bubble.prepend(cb);
       logArea.appendChild(bubble);
     });
   });
@@ -129,11 +121,16 @@ function renderLogs() {
 
 /* ---------- 로그 삭제 ---------- */
 function deleteSelectedLogs() {
-  document
-    .querySelectorAll("#logArea input:checked")
-    .forEach((cb) => {
-      logs[cb.dataset.date][cb.dataset.index] = null;
-    });
+  const selected = document.querySelectorAll(".chat-bubble.selected");
+
+  selected.forEach((bubble) => {
+    const date = bubble.previousSibling?.textContent;
+    const index = [...logArea.querySelectorAll(".chat-bubble")]
+      .filter(b => b.previousSibling?.textContent === date)
+      .indexOf(bubble);
+
+    if (logs[date]) logs[date][index] = null;
+  });
 
   Object.keys(logs).forEach(
     (d) => (logs[d] = logs[d].filter(Boolean))
@@ -144,11 +141,10 @@ function deleteSelectedLogs() {
   renderStats();
 }
 
-
-
 /* ---------- 통계 ---------- */
 function renderStats() {
-  statsArea.innerHTML = {};
+  statsArea.innerHTML = ""; // ⭐ 핵심 수정
+
   const stats = {};
 
   Object.entries(logs).forEach(([date, entries]) => {
@@ -173,6 +169,7 @@ function renderStats() {
     header.textContent = `${user} (총 ${data.total}회) ▶`;
 
     detail.className = "stats-detail";
+
     Object.entries(data.dates).forEach(([d, items]) => {
       detail.innerHTML += `<b>${d}</b><br>${Object.entries(items)
         .map(([k, v]) => `${k} x${v}`)
