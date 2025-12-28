@@ -5,6 +5,7 @@ const userName = document.getElementById("userName");
 const drawCount = document.getElementById("drawCount");
 const itemList = document.getElementById("itemList");
 const logArea = document.getElementById("logArea");
+const statsArea = document.getElementById("statsArea");
 
 /* ---------- 데이터 ---------- */
 let items = JSON.parse(localStorage.getItem("gachaItems")) || [];
