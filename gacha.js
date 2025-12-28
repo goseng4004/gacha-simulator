@@ -93,10 +93,21 @@ function renderLogs() {
   logArea.innerHTML = "";
 
   Object.entries(logs).forEach(([date, entries]) => {
-    const d = document.createElement("div");
-    d.className = "date-divider";
-    d.textContent = date;
-    logArea.appendChild(d);
+    /* 날짜 헤더 */
+    const header = document.createElement("div");
+    header.className = "date-divider collapsible";
+    header.textContent = `▼ ${date}`;
+
+    /* 날짜별 로그 묶음 */
+    const group = document.createElement("div");
+    group.className = "log-group";
+
+    /* 접기 / 펼치기 */
+    header.onclick = () => {
+      const closed = group.style.display === "none";
+      group.style.display = closed ? "block" : "none";
+      header.textContent = `${closed ? "▼" : "▶"} ${date}`;
+    };
 
     entries.forEach((e) => {
       const bubble = document.createElement("div");
@@ -109,15 +120,18 @@ function renderLogs() {
           .join("\n")}</pre>
       `;
 
-      // 클릭으로 선택 토글
-      bubble.addEventListener("click", () => {
+      /* 클릭 선택 */
+      bubble.onclick = () => {
         bubble.classList.toggle("selected");
-      });
+      };
 
-      logArea.appendChild(bubble);
+      group.appendChild(bubble);
     });
+
+    logArea.append(header, group);
   });
 }
+
 
 /* ---------- 로그 삭제 ---------- */
 function deleteSelectedLogs() {
