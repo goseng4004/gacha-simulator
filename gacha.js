@@ -112,7 +112,11 @@ function runGacha() {
   }
 
 
-  logs[date].push({ user, results });
+  logs[date].push({
+  id: Date.now() + Math.random(),
+  user,
+  results
+});
 
   saveLogs();
   renderLogs();
@@ -140,7 +144,9 @@ function renderLogs() {
       const checkbox = document.createElement("input");
       checkbox.type = "checkbox";
       checkbox.dataset.date = date;
-      checkbox.dataset.index = index;
+      checkbox.dataset.date = date;
+      checkbox.dataset.id = entry.id;
+
 
       const u = document.createElement("div");
       u.className = "chat-user";
@@ -158,8 +164,12 @@ function renderLogs() {
     });
   });
 }
+
 /* ---------- 로그 삭제 ---------- */
 function deleteSelectedLogs() {
+  
+  if (!confirm("선택한 로그를 삭제할까요?")) return;
+  
   const checked = document.querySelectorAll(
     '#logArea input[type="checkbox"]:checked'
   );
@@ -168,23 +178,22 @@ function deleteSelectedLogs() {
 
   checked.forEach(cb => {
     const date = cb.dataset.date;
-    const index = Number(cb.dataset.index);
+    const id = Number(cb.dataset.id);
 
-    if (Array.isArray(logs[date])) {
-      logs[date][index] = null; // 표시용 삭제
+    if (!Array.isArray(logs[date])) return;
+
+    logs[date] = logs[date].filter(entry => entry.id !== id);
+
+    if (logs[date].length === 0) {
+      delete logs[date];
     }
-  });
-
-  // null 제거
-  Object.keys(logs).forEach(date => {
-    logs[date] = logs[date].filter(e => e !== null);
-    if (logs[date].length === 0) delete logs[date];
   });
 
   saveLogs();
   renderLogs();
   renderStats();
 }
+
 
 /* ---------- 통계 ---------- */
 function renderStats() {
