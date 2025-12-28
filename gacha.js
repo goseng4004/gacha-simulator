@@ -112,52 +112,60 @@ function renderLogs() {
       header.textContent = `${closed ? "▼" : "▶"} ${date}`;
     };
 
-    entries.forEach((e) => {
+    entries.forEach((e, idx) => {
       const bubble = document.createElement("div");
       bubble.className = "chat-bubble";
 
+  // ★ 삭제용 정보 다시 심기
+      bubble.dataset.date = date;
+      bubble.dataset.index = idx;
+      
       bubble.innerHTML = `
         <div class="chat-user">${e.user}</div>
         <pre>${Object.entries(e.results)
-          .map(([k, v]) => `${k} x${v}`)
-          .join("\n")}</pre>
+               .map(([k, v]) => `${k} x${v}`)
+               .join("\n")}</pre>
       `;
 
-      /* 로그 클릭 선택 */
+  // 클릭 시 선택
       bubble.onclick = () => {
         bubble.classList.toggle("selected");
       };
-
+      
       group.appendChild(bubble);
-    });
+});
 
-    wrapper.append(header, group);
-    logArea.appendChild(wrapper);
-  });
 }
 
 
 /* ---------- 로그 삭제 ---------- */
 function deleteSelectedLogs() {
-  const selected = document.querySelectorAll(".chat-bubble.selected");
+  const selected = document.querySelectorAll(
+    "#logArea .chat-bubble.selected"
+  );
+
+  if (selected.length === 0) return;
 
   selected.forEach((bubble) => {
-    const date = bubble.previousSibling?.textContent;
-    const index = [...logArea.querySelectorAll(".chat-bubble")]
-      .filter(b => b.previousSibling?.textContent === date)
-      .indexOf(bubble);
+    const date = bubble.dataset.date;
+    const index = Number(bubble.dataset.index);
 
-    if (logs[date]) logs[date][index] = null;
+    if (logs[date] && logs[date][index]) {
+      logs[date][index] = null;
+    }
   });
 
-  Object.keys(logs).forEach(
-    (d) => (logs[d] = logs[d].filter(Boolean))
-  );
+  // null 정리
+  Object.keys(logs).forEach((date) => {
+    logs[date] = logs[date].filter(Boolean);
+    if (logs[date].length === 0) delete logs[date];
+  });
 
   saveLogs();
   renderLogs();
   renderStats();
 }
+
 
 /* ---------- 통계 ---------- */
 function renderStats() {
