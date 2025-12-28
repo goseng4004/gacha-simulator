@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>갓챠 시뮬레이터</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>🎰 갓챠 시뮬레이터</h1>
+
+<section>
+  <h2>상품 관리</h2>
+  <input id="itemName" placeholder="상품명">
+  <input id="itemProb" placeholder="확률">
+  <button onclick="addItem()">추가</button>
+  <ul id="itemList"></ul>
+</section>
+
+<section>
+  <h2>갓챠 돌리기</h2>
+  <input id="userName" placeholder="이름">
+  <input id="rollCount" type="number" value="1">
+  <button onclick="rollGacha()">돌리기</button>
+  <div id="result"></div>
+</section>
+
+<script src="gacha.js"></script>
+</body>
+</html>
