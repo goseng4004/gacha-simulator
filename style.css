@@ -55,13 +55,13 @@ body {
 .main-title {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 
 .main-title .author {
   font-size: 13px;
-  color: var(--text-sub);
+  color: var(--text-sub); /* 회색 */
   font-weight: normal;
   white-space: nowrap;
 }
