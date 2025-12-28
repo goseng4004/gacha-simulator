@@ -51,17 +51,29 @@ function addItem() {
 
 function updateItem() {
   if (selectedIndex === null) return;
-  items[selectedIndex].name = itemName.value;
+
+  items[selectedIndex].name = itemName.value.trim();
   items[selectedIndex].rate = Number(itemRate.value);
+
   saveItems();
+
+  selectedIndex = null;
+  itemName.value = "";
+  itemRate.value = "";
+
   renderItems();
 }
 
 function deleteItem() {
   if (selectedIndex === null) return;
+
   items.splice(selectedIndex, 1);
-  selectedIndex = null;
   saveItems();
+
+  selectedIndex = null;
+  itemName.value = "";
+  itemRate.value = "";
+
   renderItems();
 }
 
