@@ -237,3 +237,14 @@ button:hover {
     margin-right: 0;
   }
 }
+
+/* ---------- 로그 날짜 접기 ---------- */
+.date-divider.collapsible {
+  cursor: pointer;
+  user-select: none;
+  font-weight: bold;
+}
+
+.log-group {
+  margin-bottom: 20px;
+}
