@@ -350,3 +350,14 @@ button:hover {
   flex: 1;
   overflow-y: auto;
 }
+
+/*---통계 접힘 UI---*/
+.stat-header {
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+.stat-body {
+  padding-left: 10px;
+}
