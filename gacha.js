@@ -204,51 +204,55 @@ function deleteSelectedLogs() {
 
 /* ---------- 통계 ---------- */
 function renderStats() {
-  statsArea.innerHTML = ""; // ⭐ 핵심 수정
+  const statsArea = document.getElementById("statsArea");
+  const keyword = document
+    .getElementById("statsSearch")
+    .value
+    .toLowerCase();
 
-  const stats = {};
+  statsArea.innerHTML = "";
 
-  Object.entries(logs).forEach(([date, entries]) => {
-    entries.forEach((e) => {
-      stats[e.user] ||= { total: 0, dates: {} };
-      stats[e.user].dates[date] ||= {};
+  Object.entries(userStats).forEach(([user, data]) => {
+    // 🔍 검색 필터
+    if (!user.toLowerCase().includes(keyword)) return;
 
-      Object.entries(e.results).forEach(([k, v]) => {
-        stats[e.user].total += v;
-        stats[e.user].dates[date][k] =
-          (stats[e.user].dates[date][k] || 0) + v;
-      });
-    });
-  });
+    const wrapper = document.createElement("div");
+    wrapper.className = "stat-wrapper";
 
-  Object.entries(stats).forEach(([user, data]) => {
-    const box = document.createElement("div");
+    // 🔒 접힘 상태 복원
+    const isClosed = localStorage.getItem(`stat-${user}`) === "closed";
+
     const header = document.createElement("div");
-    const detail = document.createElement("div");
+    header.className = "stat-header";
+    header.textContent = `${isClosed ? "▶" : "▼"} ${user}`;
 
-    header.className = "stats-header";
-    header.textContent = `${user} (총 ${data.total}회) ▶`;
+    const body = document.createElement("div");
+    body.className = "stat-body";
+    body.style.display = isClosed ? "none" : "block";
 
-    detail.className = "stats-detail";
-
-    Object.entries(data.dates).forEach(([d, items]) => {
-      detail.innerHTML += `<b>${d}</b><br>${Object.entries(items)
-        .map(([k, v]) => `${k} x${v}`)
-        .join("<br>")}<br><br>`;
+    Object.entries(data).forEach(([item, count]) => {
+      const p = document.createElement("p");
+      p.textContent = `${item} x${count}`;
+      body.appendChild(p);
     });
 
+    // 🔒 접힘 토글 + 저장
     header.onclick = () => {
-      const open = detail.style.display === "block";
-      detail.style.display = open ? "none" : "block";
-      header.textContent = `${user} (총 ${data.total}회) ${
-        open ? "▶" : "▼"
-      }`;
+      const closed = body.style.display === "none";
+      body.style.display = closed ? "block" : "none";
+      header.textContent = `${closed ? "▼" : "▶"} ${user}`;
+      localStorage.setItem(
+        `stat-${user}`,
+        closed ? "open" : "closed"
+      );
     };
 
-    box.append(header, detail);
-    statsArea.appendChild(box);
+    wrapper.appendChild(header);
+    wrapper.appendChild(body);
+    statsArea.appendChild(wrapper);
   });
 }
+
 
 /* ---------- 초기화 ---------- */
 renderItems();
