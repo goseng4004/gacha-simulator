@@ -13,6 +13,14 @@ let logs = JSON.parse(localStorage.getItem("gachaLogs")) || {};
 let selectedIndex = null;
 
 /* ---------- 저장 ---------- */
+//  날짜 접힘 상태 저장용
+const logFoldState = JSON.parse(
+  localStorage.getItem("logFoldState") || "{}"
+);
+
+//  최신 로그 자동 스크롤 옵션
+const AUTO_SCROLL_TO_LATEST = true;
+
 const saveItems = () =>
   localStorage.setItem("gachaItems", JSON.stringify(items));
 const saveLogs = () =>
@@ -92,31 +100,47 @@ function runGacha() {
 function renderLogs() {
   logArea.innerHTML = "";
 
-  Object.entries(logs).forEach(([date, entries]) => {
+  //  날짜 최신순 정렬
+  const sortedDates = Object.keys(logs).sort(
+    (a, b) => new Date(b) - new Date(a)
+  );
+
+  sortedDates.forEach((date) => {
+    const entries = logs[date];
     const wrapper = document.createElement("div");
 
     // 날짜 헤더
     const header = document.createElement("div");
     header.className = "date-divider collapsible";
-    header.textContent = `▼ ${date}`;
+
+    const isFolded = logFoldState[date] === true;
+    header.textContent = `${isFolded ? "▶" : "▼"} ${date}`;
 
     // 로그 그룹
     const group = document.createElement("div");
     group.className = "log-group";
+    group.style.display = isFolded ? "none" : "flex";
 
     // 날짜 접기/펼치기
     header.onclick = () => {
-      const closed = group.style.display === "none";
-      group.style.display = closed ? "block" : "none";
-      header.textContent = `${closed ? "▼" : "▶"} ${date}`;
+      const folded = group.style.display === "none";
+      group.style.display = folded ? "flex" : "none";
+      header.textContent = `${folded ? "▼" : "▶"} ${date}`;
+
+      logFoldState[date] = !folded;
+      localStorage.setItem(
+        "logFoldState",
+        JSON.stringify(logFoldState)
+      );
     };
 
-    entries.forEach((e, idx) => {
+    //  같은 날짜 안에서도 최신 로그가 위로
+    [...entries].reverse().forEach((e, idx) => {
       const bubble = document.createElement("div");
       bubble.className = "chat-bubble";
 
       bubble.dataset.date = date;
-      bubble.dataset.index = idx;
+      bubble.dataset.index = entries.length - 1 - idx;
 
       bubble.innerHTML = `
         <div class="chat-user">${e.user}</div>
@@ -136,8 +160,18 @@ function renderLogs() {
     wrapper.appendChild(group);
     logArea.appendChild(wrapper);
   });
-}
 
+  //  최신 로그 자동 스크롤
+  if (AUTO_SCROLL_TO_LATEST) {
+    const firstLog = logArea.querySelector(".chat-bubble");
+    if (firstLog) {
+      firstLog.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }
+}
 
 /* ---------- 로그 삭제 ---------- */
 function deleteSelectedLogs() {
