@@ -338,3 +338,15 @@ button:hover {
   max-height: calc(100vh - 180px);
   overflow-y: auto;
 }
+
+/*---스크롤분리---*/
+.stats-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#statsArea {
+  flex: 1;
+  overflow-y: auto;
+}
