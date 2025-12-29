@@ -46,7 +46,12 @@ body {
   width: 62%;
   padding: 24px;
   background: var(--bg-sub);
-  overflow-y: auto;
+  
+  display: flex;
+  flex-direction: column;
+   
+  overflow: hidden;               /*right-panel 자체 스크롤 제거*/
+  height: 100vh;                  /*화면 높이 고정*/
 }
 
 /* =========================
@@ -163,6 +168,8 @@ button:hover {
    로그 영역
 ========================= */
 #logArea {
+  flex: 1;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 8px;
