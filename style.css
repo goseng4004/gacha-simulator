@@ -330,3 +330,11 @@ button:hover {
   max-height: calc(100vh - 180px);
   overflow-y: auto;
 }
+
+/* =========================
+   통계 전용 스크롤
+========================= */
+#statsView {
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
+}
