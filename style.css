@@ -287,3 +287,46 @@ button:hover {
     width: 100%;
   }
 }
+
+/* =========================
+   탭 UI
+========================= */
+.tab-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.tab {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid var(--border);
+  background: #eee;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.tab.active {
+  background: #fff;
+  border-color: #222;
+  font-weight: bold;
+}
+
+/* =========================
+   탭 내용
+========================= */
+.tab-view {
+  display: none;
+}
+
+.tab-view.active {
+  display: block;
+}
+
+/* =========================
+   로그 전용 스크롤
+========================= */
+.scroll-area {
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
+}
