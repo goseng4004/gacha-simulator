@@ -201,6 +201,7 @@ function deleteSelectedLogs() {
   renderStats();
 }
 
+
 /* ---------- 통계 ---------- */
 function renderStats() {
   const statsArea = document.getElementById("statsArea");
@@ -251,6 +252,7 @@ function renderStats() {
     statsArea.appendChild(wrapper);
   });
 }
+
 
 /* ---------- 초기화 ---------- */
 renderItems();
