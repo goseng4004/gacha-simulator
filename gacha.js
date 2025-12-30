@@ -93,7 +93,6 @@ function renderLogs() {
   logArea.innerHTML = "";
 
   Object.entries(logs).forEach(([date, entries]) => {
-    /* 날짜 + 로그 전체 묶음 */
     const wrapper = document.createElement("div");
 
     /* 날짜 헤더 */
@@ -101,20 +100,22 @@ function renderLogs() {
     header.className = "date-divider collapsible";
     header.textContent = `▼ ${date}`;
 
-    /* 로그 묶음 */
+    /* 로그 그룹 */
     const group = document.createElement("div");
     group.className = "log-group";
 
-    /* 날짜 접기/펼치기 */
     header.onclick = () => {
       const closed = group.style.display === "none";
       group.style.display = closed ? "block" : "none";
       header.textContent = `${closed ? "▼" : "▶"} ${date}`;
     };
 
-    entries.forEach((e) => {
+    entries.forEach((e, idx) => {
       const bubble = document.createElement("div");
       bubble.className = "chat-bubble";
+
+      bubble.dataset.date = date;
+      bubble.dataset.index = idx;
 
       bubble.innerHTML = `
         <div class="chat-user">${e.user}</div>
@@ -123,7 +124,6 @@ function renderLogs() {
           .join("\n")}</pre>
       `;
 
-      /* 로그 클릭 선택 */
       bubble.onclick = () => {
         bubble.classList.toggle("selected");
       };
@@ -131,33 +131,42 @@ function renderLogs() {
       group.appendChild(bubble);
     });
 
-    wrapper.append(header, group);
+    wrapper.appendChild(header);
+    wrapper.appendChild(group);
     logArea.appendChild(wrapper);
   });
 }
 
 
+
 /* ---------- 로그 삭제 ---------- */
 function deleteSelectedLogs() {
-  const selected = document.querySelectorAll(".chat-bubble.selected");
+  const selected = document.querySelectorAll(
+    "#logArea .chat-bubble.selected"
+  );
+
+  if (selected.length === 0) return;
 
   selected.forEach((bubble) => {
-    const date = bubble.previousSibling?.textContent;
-    const index = [...logArea.querySelectorAll(".chat-bubble")]
-      .filter(b => b.previousSibling?.textContent === date)
-      .indexOf(bubble);
+    const date = bubble.dataset.date;
+    const index = Number(bubble.dataset.index);
 
-    if (logs[date]) logs[date][index] = null;
+    if (logs[date] && logs[date][index]) {
+      logs[date][index] = null;
+    }
   });
 
-  Object.keys(logs).forEach(
-    (d) => (logs[d] = logs[d].filter(Boolean))
-  );
+  // null 정리
+  Object.keys(logs).forEach((date) => {
+    logs[date] = logs[date].filter(Boolean);
+    if (logs[date].length === 0) delete logs[date];
+  });
 
   saveLogs();
   renderLogs();
   renderStats();
 }
+
 
 /* ---------- 통계 ---------- */
 function renderStats() {
