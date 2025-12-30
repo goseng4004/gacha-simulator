@@ -268,3 +268,4 @@ function openTab(type) {
     document.getElementById("statsView").classList.add("active");
   }
 }
+
