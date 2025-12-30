@@ -254,3 +254,17 @@ function renderStats() {
 renderItems();
 renderLogs();
 renderStats();
+
+/*-----*/
+function openTab(type) {
+  document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
+  document.querySelectorAll(".tab-view").forEach(v => v.classList.remove("active"));
+
+  if (type === "log") {
+    document.querySelector(".tab-bar .tab:nth-child(1)").classList.add("active");
+    document.getElementById("logView").classList.add("active");
+  } else {
+    document.querySelector(".tab-bar .tab:nth-child(2)").classList.add("active");
+    document.getElementById("statsView").classList.add("active");
+  }
+}
