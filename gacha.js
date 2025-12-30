@@ -246,6 +246,24 @@ function renderStats() {
 
   statsArea.innerHTML = "";
 
+  // ✅ 여기서 userStats 생성
+  const userStats = {};
+
+  Object.values(logs).flat().forEach(entry => {
+    const user = entry.user;
+    userStats[user] ||= {};
+
+    Object.entries(entry.results).forEach(([item, count]) => {
+      userStats[user][item] =
+        (userStats[user][item] || 0) + count;
+    });
+  });
+
+  // ⬇️ 이제 안전하게 사용 가능
+  Object.entries(userStats).forEach(([user, data]) => {
+    if (!nameMatches(user, keyword)) return;
+
+
   // ✅ 1️⃣ userStats 초기화
   Object.keys(userStats).forEach(k => delete userStats[k]);
 
