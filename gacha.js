@@ -13,14 +13,6 @@ let logs = JSON.parse(localStorage.getItem("gachaLogs")) || {};
 let selectedIndex = null;
 
 /* ---------- 저장 ---------- */
-//  날짜 접힘 상태 저장용
-const logFoldState = JSON.parse(
-  localStorage.getItem("logFoldState") || "{}"
-);
-
-//  최신 로그 자동 스크롤 옵션
-const AUTO_SCROLL_TO_LATEST = true;
-
 const saveItems = () =>
   localStorage.setItem("gachaItems", JSON.stringify(items));
 const saveLogs = () =>
@@ -100,47 +92,31 @@ function runGacha() {
 function renderLogs() {
   logArea.innerHTML = "";
 
-  //  날짜 최신순 정렬
-  const sortedDates = Object.keys(logs).sort(
-    (a, b) => new Date(b) - new Date(a)
-  );
-
-  sortedDates.forEach((date) => {
-    const entries = logs[date];
+  Object.entries(logs).forEach(([date, entries]) => {
     const wrapper = document.createElement("div");
 
     // 날짜 헤더
     const header = document.createElement("div");
     header.className = "date-divider collapsible";
-
-    const isFolded = logFoldState[date] === true;
-    header.textContent = `${isFolded ? "▶" : "▼"} ${date}`;
+    header.textContent = `▼ ${date}`;
 
     // 로그 그룹
     const group = document.createElement("div");
     group.className = "log-group";
-    group.style.display = isFolded ? "none" : "flex";
 
     // 날짜 접기/펼치기
     header.onclick = () => {
-      const folded = group.style.display === "none";
-      group.style.display = folded ? "flex" : "none";
-      header.textContent = `${folded ? "▼" : "▶"} ${date}`;
-
-      logFoldState[date] = !folded;
-      localStorage.setItem(
-        "logFoldState",
-        JSON.stringify(logFoldState)
-      );
+      const closed = group.style.display === "none";
+      group.style.display = closed ? "block" : "none";
+      header.textContent = `${closed ? "▼" : "▶"} ${date}`;
     };
 
-    //  같은 날짜 안에서도 최신 로그가 위로
-    [...entries].reverse().forEach((e, idx) => {
+    entries.forEach((e, idx) => {
       const bubble = document.createElement("div");
       bubble.className = "chat-bubble";
 
       bubble.dataset.date = date;
-      bubble.dataset.index = entries.length - 1 - idx;
+      bubble.dataset.index = idx;
 
       bubble.innerHTML = `
         <div class="chat-user">${e.user}</div>
@@ -160,18 +136,8 @@ function renderLogs() {
     wrapper.appendChild(group);
     logArea.appendChild(wrapper);
   });
-
-  //  최신 로그 자동 스크롤
-  if (AUTO_SCROLL_TO_LATEST) {
-    const firstLog = logArea.querySelector(".chat-bubble");
-    if (firstLog) {
-      firstLog.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
-  }
 }
+
 
 /* ---------- 로그 삭제 ---------- */
 function deleteSelectedLogs() {
@@ -204,71 +170,53 @@ function deleteSelectedLogs() {
 
 /* ---------- 통계 ---------- */
 function renderStats() {
-  const statsArea = document.getElementById("statsArea");
-  const keyword = document
-    .getElementById("statsSearch")
-    .value
-    .toLowerCase();
+  statsArea.innerHTML = ""; // ⭐ 핵심 수정
 
-  statsArea.innerHTML = "";
+  const stats = {};
 
-  Object.entries(userStats).forEach(([user, data]) => {
-    // 🔍 검색 필터
-    if (!user.toLowerCase().includes(keyword)) return;
+  Object.entries(logs).forEach(([date, entries]) => {
+    entries.forEach((e) => {
+      stats[e.user] ||= { total: 0, dates: {} };
+      stats[e.user].dates[date] ||= {};
 
-    const wrapper = document.createElement("div");
-    wrapper.className = "stat-wrapper";
+      Object.entries(e.results).forEach(([k, v]) => {
+        stats[e.user].total += v;
+        stats[e.user].dates[date][k] =
+          (stats[e.user].dates[date][k] || 0) + v;
+      });
+    });
+  });
 
-    // 🔒 접힘 상태 복원
-    const isClosed = localStorage.getItem(`stat-${user}`) === "closed";
-
+  Object.entries(stats).forEach(([user, data]) => {
+    const box = document.createElement("div");
     const header = document.createElement("div");
-    header.className = "stat-header";
-    header.textContent = `${isClosed ? "▶" : "▼"} ${user}`;
+    const detail = document.createElement("div");
 
-    const body = document.createElement("div");
-    body.className = "stat-body";
-    body.style.display = isClosed ? "none" : "block";
+    header.className = "stats-header";
+    header.textContent = `${user} (총 ${data.total}회) ▶`;
 
-    Object.entries(data).forEach(([item, count]) => {
-      const p = document.createElement("p");
-      p.textContent = `${item} x${count}`;
-      body.appendChild(p);
+    detail.className = "stats-detail";
+
+    Object.entries(data.dates).forEach(([d, items]) => {
+      detail.innerHTML += `<b>${d}</b><br>${Object.entries(items)
+        .map(([k, v]) => `${k} x${v}`)
+        .join("<br>")}<br><br>`;
     });
 
-    // 🔒 접힘 토글 + 저장
     header.onclick = () => {
-      const closed = body.style.display === "none";
-      body.style.display = closed ? "block" : "none";
-      header.textContent = `${closed ? "▼" : "▶"} ${user}`;
-      localStorage.setItem(
-        `stat-${user}`,
-        closed ? "open" : "closed"
-      );
+      const open = detail.style.display === "block";
+      detail.style.display = open ? "none" : "block";
+      header.textContent = `${user} (총 ${data.total}회) ${
+        open ? "▶" : "▼"
+      }`;
     };
 
-    wrapper.appendChild(header);
-    wrapper.appendChild(body);
-    statsArea.appendChild(wrapper);
+    box.append(header, detail);
+    statsArea.appendChild(box);
   });
 }
-
 
 /* ---------- 초기화 ---------- */
 renderItems();
 renderLogs();
 renderStats();
-
-/*-----*/
-function openTab(type) {
-  document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
-  document.querySelectorAll(".tab-view").forEach(v => v.classList.remove("active"));
-
-  if (type === "log") {
-    document.querySelector(".tab-bar .tab:nth-child(1)").classList.add("active");
-    document.getElementById("logView").classList.add("active");
-  } else {
-    document.querySelector(".tab-bar .tab:nth-child(2)").classList.add("active");
-    document.getElementById("statsView").classList.add("active");
-  }
-}
