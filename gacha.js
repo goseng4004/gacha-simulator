@@ -1,5 +1,4 @@
 /* ---------- DOM 연결 ---------- */
-const userStats = {};
 const itemName = document.getElementById("itemName");
 const itemRate = document.getElementById("itemRate");
 const userName = document.getElementById("userName");
