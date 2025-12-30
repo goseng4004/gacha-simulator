@@ -1,4 +1,5 @@
 /* ---------- DOM 연결 ---------- */
+const userStats = {};
 const itemName = document.getElementById("itemName");
 const itemRate = document.getElementById("itemRate");
 const userName = document.getElementById("userName");
@@ -245,15 +246,31 @@ function renderStats() {
 
   statsArea.innerHTML = "";
 
+  // ✅ 1️⃣ userStats 초기화
+  Object.keys(userStats).forEach(k => delete userStats[k]);
+
+  // ✅ 2️⃣ logs → userStats 재구성
+  Object.values(logs).forEach(entries => {
+    entries.forEach(entry => {
+      const user = entry.user;
+      userStats[user] ||= {};
+
+      Object.entries(entry.results).forEach(([item, count]) => {
+        userStats[user][item] =
+          (userStats[user][item] || 0) + count;
+      });
+    });
+  });
+
+  // ✅ 3️⃣ 렌더링 + 필터
   Object.entries(userStats).forEach(([user, data]) => {
-    // 🔍 검색 필터
     if (!nameMatches(user, keyword)) return;
 
     const wrapper = document.createElement("div");
     wrapper.className = "stat-wrapper";
 
-    // 🔒 접힘 상태 복원
-    const isClosed = localStorage.getItem(`stat-${user}`) === "closed";
+    const isClosed =
+      localStorage.getItem(`stat-${user}`) === "closed";
 
     const header = document.createElement("div");
     header.className = "stat-header";
@@ -269,7 +286,6 @@ function renderStats() {
       body.appendChild(p);
     });
 
-    // 🔒 접힘 토글 + 저장
     header.onclick = () => {
       const closed = body.style.display === "none";
       body.style.display = closed ? "block" : "none";
@@ -285,7 +301,6 @@ function renderStats() {
     statsArea.appendChild(wrapper);
   });
 }
-
 
 /* ---------- 초기화 ---------- */
 renderItems();
