@@ -93,74 +93,51 @@ function renderLogs() {
   logArea.innerHTML = "";
 
   Object.entries(logs).forEach(([date, entries]) => {
-    const wrapper = document.createElement("div");
-
-    // 날짜 헤더
-    const header = document.createElement("div");
-    header.className = "date-divider collapsible";
-    header.textContent = `▼ ${date}`;
-
-    // 로그 그룹
-    const group = document.createElement("div");
-    group.className = "log-group";
-
-    // 날짜 접기/펼치기
-    header.onclick = () => {
-      const closed = group.style.display === "none";
-      group.style.display = closed ? "block" : "none";
-      header.textContent = `${closed ? "▼" : "▶"} ${date}`;
-    };
+    const d = document.createElement("div");
+    d.className = "date-divider";
+    d.textContent = date;
+    logArea.appendChild(d);
 
     entries.forEach((e, idx) => {
       const bubble = document.createElement("div");
       bubble.className = "chat-bubble";
 
-      bubble.dataset.date = date;
-      bubble.dataset.index = idx;
+      const cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.dataset.date = date;
+      cb.dataset.index = idx;
 
-      bubble.innerHTML = `
-        <div class="chat-user">${e.user}</div>
-        <pre>${Object.entries(e.results)
-          .map(([k, v]) => `${k} x${v}`)
-          .join("\n")}</pre>
-      `;
+      cb.onchange = () =>
+        bubble.classList.toggle("selected", cb.checked);
 
-      bubble.onclick = () => {
-        bubble.classList.toggle("selected");
+      bubble.onclick = (ev) => {
+        if (ev.target.tagName === "INPUT") return;
+        cb.checked = !cb.checked;
+        bubble.classList.toggle("selected", cb.checked);
       };
 
-      group.appendChild(bubble);
-    });
+      bubble.innerHTML += `<div class="chat-user">${e.user}</div>`;
+      bubble.innerHTML += `<pre>${Object.entries(e.results)
+        .map(([k, v]) => `${k} x${v}`)
+        .join("\n")}</pre>`;
 
-    wrapper.appendChild(header);
-    wrapper.appendChild(group);
-    logArea.appendChild(wrapper);
+      bubble.prepend(cb);
+      logArea.appendChild(bubble);
+    });
   });
 }
 
-
 /* ---------- 로그 삭제 ---------- */
 function deleteSelectedLogs() {
-  const selected = document.querySelectorAll(
-    "#logArea .chat-bubble.selected"
+  document
+    .querySelectorAll("#logArea input:checked")
+    .forEach((cb) => {
+      logs[cb.dataset.date][cb.dataset.index] = null;
+    });
+
+  Object.keys(logs).forEach(
+    (d) => (logs[d] = logs[d].filter(Boolean))
   );
-
-  if (selected.length === 0) return;
-
-  selected.forEach((bubble) => {
-    const date = bubble.dataset.date;
-    const index = Number(bubble.dataset.index);
-
-    if (logs[date] && logs[date][index]) {
-      logs[date][index] = null;
-    }
-  });
-
-  // null 정리
-  Object.keys(logs).forEach((date) => {
-    logs[date] = logs[date].filter(Boolean);
-    if (logs[date].length === 0) delete logs[date];
-  });
 
   saveLogs();
   renderLogs();
@@ -168,10 +145,10 @@ function deleteSelectedLogs() {
 }
 
 
+
 /* ---------- 통계 ---------- */
 function renderStats() {
-  statsArea.innerHTML = ""; // ⭐ 핵심 수정
-
+  statsArea.innerHTML = {};
   const stats = {};
 
   Object.entries(logs).forEach(([date, entries]) => {
@@ -196,7 +173,6 @@ function renderStats() {
     header.textContent = `${user} (총 ${data.total}회) ▶`;
 
     detail.className = "stats-detail";
-
     Object.entries(data.dates).forEach(([d, items]) => {
       detail.innerHTML += `<b>${d}</b><br>${Object.entries(items)
         .map(([k, v]) => `${k} x${v}`)
