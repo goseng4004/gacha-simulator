@@ -201,6 +201,39 @@ function deleteSelectedLogs() {
   renderStats();
 }
 
+/* ---------- 이름 검색 유틸 ---------- */
+const CHO = [
+  "ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ",
+  "ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"
+];
+
+function getChosung(str) {
+  return [...str].map(ch => {
+    const code = ch.charCodeAt(0) - 0xac00;
+    if (code < 0 || code > 11171) return ch;
+    return CHO[Math.floor(code / 588)];
+  }).join("");
+}
+
+function nameMatches(userName, keyword) {
+  if (!keyword) return true;
+
+  // 공백 제거
+  const name = userName.replace(/\s+/g, "");
+  const key = keyword.replace(/\s+/g, "");
+
+  // 1️⃣ 연속 문자열
+  if (name.includes(key)) return true;
+
+  // 2️⃣ 글자 단위 ANY 매칭
+  if ([...key].some(ch => name.includes(ch))) return true;
+
+  // 3️⃣ 초성 매칭 (ㅅㅇ → 수아)
+  const nameCho = getChosung(name);
+  if (nameCho.includes(key)) return true;
+
+  return false;
+}
 
 /* ---------- 통계 ---------- */
 function renderStats() {
@@ -208,13 +241,13 @@ function renderStats() {
   const keyword = document
     .getElementById("statsSearch")
     .value
-    .toLowerCase();
+    .trim();
 
   statsArea.innerHTML = "";
 
   Object.entries(userStats).forEach(([user, data]) => {
     // 🔍 검색 필터
-    if (!user.toLowerCase().includes(keyword)) return;
+    if (!nameMatches(user, keyword)) return;
 
     const wrapper = document.createElement("div");
     wrapper.className = "stat-wrapper";
