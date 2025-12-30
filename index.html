@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gacha System</title>
   
-  <link rel="stylesheet" href="style.css?v=5" />
+  <link rel="stylesheet" href="style.css?v=6" />
 </head>
 <body>
   <div class="container">
@@ -33,20 +33,40 @@
 
     <!-- 우측 로그 -->
     <div class="right-panel">
-      <div class="log-header">
-        <h1>결과 로그</h1>
-        <button onclick="deleteSelectedLogs()">선택 삭제</button>
-      </div>
-
-      <div class="stats-panel">
-        <h2>사람별 통계</h2>
-        <div id="statsArea"></div>
-      </div>
-
-      <div id="logArea"></div>
-    </div>
+  <!-- 탭 버튼 -->
+  <div class="tab-bar">
+    <button class="tab active" onclick="openTab('log')"> 로그</button>
+    <button class="tab" onclick="openTab('stats')"> 통계</button>
   </div>
 
-  <script src="gacha.js?v=5"></script>
+  <!-- 로그 탭 -->
+  <div id="logView" class="tab-view active">
+    <div class="log-header">
+      <h1>결과 로그</h1>
+      <button onclick="deleteSelectedLogs()">선택 삭제</button>
+    </div>
+
+    <div id="logArea" class="scroll-area"></div>
+  </div>
+
+  <!-- 통계 탭 -->
+  <div id="statsView" class="tab-view">
+    <div class="stats-panel">
+      <h2>사람별 통계</h2>
+
+  <!-- 🔍 검색 필터 -->
+      <input
+        type="text"
+        id="statsSearch"
+        placeholder="이름 검색"
+        oninput="renderStats()"
+      />
+      
+      <div id="statsArea"></div>
+    </div>
+  </div>
+</div>
+
+  <script src="gacha.js?v=6"></script>
 </body>
 </html>
