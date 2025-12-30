@@ -111,50 +111,56 @@ function renderStats() {
   statsArea.innerHTML = "";
   const keyword = document.getElementById("statsSearch").value.trim();
 
+  // 🔥 날짜 → 사람 → 아이템 구조 재계산
   const dateStats = {};
 
   Object.entries(logs).forEach(([date, entries]) => {
     dateStats[date] ||= {};
-    entries.forEach(e => {
-      dateStats[date][e.user] ||= {};
-      Object.entries(e.results).forEach(([item, count]) => {
-        dateStats[date][e.user][item] =
-          (dateStats[date][e.user][item] || 0) + count;
+
+    entries.forEach(entry => {
+      const user = entry.user;
+      dateStats[date][user] ||= {};
+
+      Object.entries(entry.results).forEach(([item, count]) => {
+        dateStats[date][user][item] =
+          (dateStats[date][user][item] || 0) + count;
       });
     });
   });
 
-  Object.entries(dateStats)
-    .sort((a, b) => new Date(b[0]) - new Date(a[0]))
-    .forEach(([date, users]) => {
+  // 🔽 날짜 최신순
+  Object.keys(dateStats)
+    .sort((a, b) => new Date(b) - new Date(a))
+    .forEach(date => {
       const dateHeader = document.createElement("div");
       dateHeader.className = "date-divider";
       dateHeader.textContent = date;
       statsArea.appendChild(dateHeader);
 
-      Object.entries(users).forEach(([user, data]) => {
+      Object.entries(dateStats[date]).forEach(([user, data]) => {
+        // 🔍 이름 / 초성 필터
         if (!nameMatches(user, keyword)) return;
 
-        const h = document.createElement("div");
-        h.className = "stat-header";
-        h.textContent = user;
+        const header = document.createElement("div");
+        header.className = "stat-header";
+        header.textContent = user;
 
-        const b = document.createElement("div");
-        b.className = "stat-body";
+        const body = document.createElement("div");
+        body.className = "stat-body";
 
         Object.entries(data).forEach(([item, count]) => {
           const p = document.createElement("p");
           p.textContent = `${item} x${count}`;
-          b.appendChild(p);
+          body.appendChild(p);
         });
 
-        h.onclick = () => {
-          b.style.display =
-            b.style.display === "none" ? "block" : "none";
+        header.onclick = () => {
+          body.style.display =
+            body.style.display === "none" ? "block" : "none";
         };
 
-        statsArea.appendChild(h);
-        statsArea.appendChild(b);
+        statsArea.appendChild(header);
+        statsArea.appendChild(body);
       });
     });
 }
