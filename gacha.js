@@ -111,58 +111,60 @@ function renderStats() {
   statsArea.innerHTML = "";
   const keyword = document.getElementById("statsSearch").value.trim();
 
-  // 🔥 날짜 → 사람 → 아이템 구조 재계산
-  const dateStats = {};
+  // 🔥 사람 → 날짜 → 아이템 구조 생성
+  const userStats = {};
 
   Object.entries(logs).forEach(([date, entries]) => {
-    dateStats[date] ||= {};
-
     entries.forEach(entry => {
       const user = entry.user;
-      dateStats[date][user] ||= {};
+      userStats[user] ||= {};
+      userStats[user][date] ||= {};
 
       Object.entries(entry.results).forEach(([item, count]) => {
-        dateStats[date][user][item] =
-          (dateStats[date][user][item] || 0) + count;
+        userStats[user][date][item] =
+          (userStats[user][date][item] || 0) + count;
       });
     });
   });
 
-  // 🔽 날짜 최신순
-  Object.keys(dateStats)
-    .sort((a, b) => new Date(b) - new Date(a))
-    .forEach(date => {
-      const dateHeader = document.createElement("div");
-      dateHeader.className = "date-divider";
-      dateHeader.textContent = date;
-      statsArea.appendChild(dateHeader);
+  // 🔽 사람 이름 기준 출력
+  Object.entries(userStats).forEach(([user, dates]) => {
+    // 🔍 이름 / 초성 필터
+    if (!nameMatches(user, keyword)) return;
 
-      Object.entries(dateStats[date]).forEach(([user, data]) => {
-        // 🔍 이름 / 초성 필터
-        if (!nameMatches(user, keyword)) return;
+    const userHeader = document.createElement("div");
+    userHeader.className = "stat-header";
+    userHeader.textContent = user;
 
-        const header = document.createElement("div");
-        header.className = "stat-header";
-        header.textContent = user;
+    const userBody = document.createElement("div");
+    userBody.className = "stat-body";
 
-        const body = document.createElement("div");
-        body.className = "stat-body";
+    // 날짜 최신순
+    Object.keys(dates)
+      .sort((a, b) => new Date(b) - new Date(a))
+      .forEach(date => {
+        const dateTitle = document.createElement("div");
+        dateTitle.className = "date-divider";
+        dateTitle.textContent = date;
 
-        Object.entries(data).forEach(([item, count]) => {
+        userBody.appendChild(dateTitle);
+
+        Object.entries(dates[date]).forEach(([item, count]) => {
           const p = document.createElement("p");
           p.textContent = `${item} x${count}`;
-          body.appendChild(p);
+          userBody.appendChild(p);
         });
-
-        header.onclick = () => {
-          body.style.display =
-            body.style.display === "none" ? "block" : "none";
-        };
-
-        statsArea.appendChild(header);
-        statsArea.appendChild(body);
       });
-    });
+
+    // 접기 / 펼치기
+    userHeader.onclick = () => {
+      userBody.style.display =
+        userBody.style.display === "none" ? "block" : "none";
+    };
+
+    statsArea.appendChild(userHeader);
+    statsArea.appendChild(userBody);
+  });
 }
 
 /* ---------- 탭 ---------- */
