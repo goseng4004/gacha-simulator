@@ -1,5 +1,4 @@
 /* ---------- DOM 연결 ---------- */
-const userStats = {};
 const itemName = document.getElementById("itemName");
 const itemRate = document.getElementById("itemRate");
 const userName = document.getElementById("userName");
@@ -101,6 +100,7 @@ function runGacha() {
 function renderLogs() {
   logArea.innerHTML = "";
 
+  //  날짜 최신순 정렬
   const sortedDates = Object.keys(logs).sort(
     (a, b) => new Date(b) - new Date(a)
   );
@@ -109,16 +109,19 @@ function renderLogs() {
     const entries = logs[date];
     const wrapper = document.createElement("div");
 
+    // 날짜 헤더
     const header = document.createElement("div");
     header.className = "date-divider collapsible";
 
     const isFolded = logFoldState[date] === true;
     header.textContent = `${isFolded ? "▶" : "▼"} ${date}`;
 
+    // 로그 그룹
     const group = document.createElement("div");
     group.className = "log-group";
     group.style.display = isFolded ? "none" : "flex";
 
+    // 날짜 접기/펼치기
     header.onclick = () => {
       const folded = group.style.display === "none";
       group.style.display = folded ? "flex" : "none";
@@ -131,6 +134,7 @@ function renderLogs() {
       );
     };
 
+    //  같은 날짜 안에서도 최신 로그가 위로
     [...entries].reverse().forEach((e, idx) => {
       const bubble = document.createElement("div");
       bubble.className = "chat-bubble";
@@ -157,6 +161,7 @@ function renderLogs() {
     logArea.appendChild(wrapper);
   });
 
+  //  최신 로그 자동 스크롤
   if (AUTO_SCROLL_TO_LATEST) {
     const firstLog = logArea.querySelector(".chat-bubble");
     if (firstLog) {
@@ -185,6 +190,7 @@ function deleteSelectedLogs() {
     }
   });
 
+  // null 정리
   Object.keys(logs).forEach((date) => {
     logs[date] = logs[date].filter(Boolean);
     if (logs[date].length === 0) delete logs[date];
@@ -195,51 +201,24 @@ function deleteSelectedLogs() {
   renderStats();
 }
 
-/* ---------- 이름 검색 유틸 ---------- */
-const CHO = [
-  "ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ",
-  "ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"
-];
-
-function getChosung(str) {
-  return [...str].map(ch => {
-    const code = ch.charCodeAt(0) - 0xac00;
-    if (code < 0 || code > 11171) return ch;
-    return CHO[Math.floor(code / 588)];
-  }).join("");
-}
-
-function nameMatches(userName, keyword) {
-  if (!keyword) return true;
-
-  const name = userName.replace(/\s+/g, "");
-  const key = keyword.replace(/\s+/g, "");
-
-  if (name.includes(key)) return true;
-  if ([...key].some(ch => name.includes(ch))) return true;
-
-  const nameCho = getChosung(name);
-  if (nameCho.includes(key)) return true;
-
-  return false;
-}
-
 /* ---------- 통계 ---------- */
 function renderStats() {
   const statsArea = document.getElementById("statsArea");
   const keyword = document
     .getElementById("statsSearch")
     .value
-    .trim();
+    .toLowerCase();
 
   statsArea.innerHTML = "";
 
   Object.entries(userStats).forEach(([user, data]) => {
-    if (!nameMatches(user, keyword)) return;
+    // 🔍 검색 필터
+    if (!user.toLowerCase().includes(keyword)) return;
 
     const wrapper = document.createElement("div");
     wrapper.className = "stat-wrapper";
 
+    // 🔒 접힘 상태 복원
     const isClosed = localStorage.getItem(`stat-${user}`) === "closed";
 
     const header = document.createElement("div");
@@ -256,6 +235,7 @@ function renderStats() {
       body.appendChild(p);
     });
 
+    // 🔒 접힘 토글 + 저장
     header.onclick = () => {
       const closed = body.style.display === "none";
       body.style.display = closed ? "block" : "none";
