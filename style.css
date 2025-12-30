@@ -129,4 +129,235 @@ input {
 }
 
 button {
-  padding: 8px
+  padding: 8px 12px;
+  margin-top: 6px;
+  border: 1px solid #333;
+  background: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #222;
+  color: #fff;
+}
+
+/* =========================
+   상품 리스트
+========================= */
+#itemList {
+  list-style: none;
+  padding: 0;
+  margin-top: 12px;
+}
+
+#itemList li {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  margin-bottom: 6px;
+  cursor: pointer;
+}
+
+#itemList li.selected {
+  background: #eaeaea;
+  border-color: #222;
+}
+
+/* =========================
+   로그 영역
+========================= */
+#logArea {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* 날짜 헤더 */
+.date-divider {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-sub);
+  margin: 20px 0 12px;
+}
+
+.date-divider.collapsible {
+  cursor: pointer;
+  user-select: none;
+  font-weight: bold;
+}
+
+/* 날짜별 로그 묶음 */
+.log-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+/* =========================
+   채팅형 로그 버블
+========================= */
+.chat-bubble {
+  width: 100%;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.chat-bubble.selected {
+  background: #f0f0f0;
+  border-color: #222;
+}
+
+.chat-user {
+  font-weight: bold;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.chat-bubble pre {
+  margin: 0;
+  font-size: 13px;
+  white-space: pre-wrap;
+}
+
+/* =========================
+   사람별 통계
+========================= */
+.stats-panel {
+  margin-bottom: 20px;
+  padding: 12px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.stats-header {
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.stats-detail {
+  display: none;
+  margin-left: 10px;
+  font-size: 13px;
+}
+
+/* =========================
+   모바일 반응형
+========================= */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .left-panel,
+  .right-panel {
+    width: 100%;
+    border-right: none;
+  }
+
+  /* 🔥 모바일에서 제목 줄바꿈 허용 */
+  .log-header h1 {
+    white-space: normal;
+    word-break: keep-all;
+  }
+
+  .main-title {
+    gap: 4px;
+  }
+
+  .main-title .author {
+    font-size: 12px;
+  }
+
+  /* 로그 헤더 세로 정렬 */
+  .log-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  button {
+    width: 100%;
+  }
+}
+
+/* =========================
+   탭 UI
+========================= */
+.tab-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.tab {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid var(--border);
+  background: #eee;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.tab.active {
+  background: #fff;
+  border-color: #222;
+  font-weight: bold;
+}
+
+/* =========================
+   탭 내용
+========================= */
+.tab-view {
+  display: none;
+}
+
+.tab-view.active {
+  display: block;
+}
+
+/* =========================
+   로그 전용 스크롤
+========================= */
+.scroll-area {
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
+}
+
+/* =========================
+   통계 전용 스크롤
+========================= */
+#statsView {
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
+}
+
+/*---스크롤분리---*/
+.stats-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#statsArea {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/*---통계 접힘 UI---*/
+.stat-header {
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+.stat-body {
+  padding-left: 10px;
+}
