@@ -203,6 +203,21 @@ function deleteSelectedLogs() {
 
 /* ---------- 통계 ---------- */
 function renderStats() {
+  // 🔥 통계 재계산
+Object.keys(userStats).forEach(k => delete userStats[k]);
+
+Object.values(logs).forEach(dayLogs => {
+  dayLogs.forEach(entry => {
+    const user = entry.user;
+    userStats[user] ||= {};
+
+    Object.entries(entry.results).forEach(([item, count]) => {
+      userStats[user][item] =
+        (userStats[user][item] || 0) + count;
+    });
+  });
+});
+  
   const statsArea = document.getElementById("statsArea");
   const keyword = document
     .getElementById("statsSearch")
