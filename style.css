@@ -50,8 +50,8 @@ body {
   display: flex;
   flex-direction: column;
    
-  overflow: hidden;               /*right-panel 자체 스크롤 제거*/
-  height: 100vh;                  /*화면 높이 고정*/
+  overflow: hidden;
+  height: 100vh;
 }
 
 /* =========================
@@ -66,7 +66,7 @@ body {
 
 .main-title .author {
   font-size: 13px;
-  color: var(--text-sub); /* 회색 */
+  color: var(--text-sub);
   font-weight: normal;
   white-space: nowrap;
 }
@@ -110,7 +110,6 @@ h2 {
   border-bottom: 1px solid var(--border);
 }
 
-/* 사람별 통계 타이틀 공백 정리 */
 .stats-panel h2 {
   margin: 0 0 8px;
   padding-bottom: 6px;
@@ -263,7 +262,6 @@ button:hover {
     border-right: none;
   }
 
-  /* 🔥 모바일에서 제목 줄바꿈 허용 */
   .log-header h1 {
     white-space: normal;
     word-break: keep-all;
@@ -277,7 +275,6 @@ button:hover {
     font-size: 12px;
   }
 
-  /* 로그 헤더 세로 정렬 */
   .log-header {
     flex-direction: column;
     align-items: stretch;
