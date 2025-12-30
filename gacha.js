@@ -108,8 +108,13 @@ function nameMatches(name, key) {
 
 /* ---------- 통계 ---------- */
 function renderStats() {
+  const statsArea = document.getElementById("statsArea");
+  const keyword = document
+    .getElementById("statsSearch")
+    .value
+    .trim();
+
   statsArea.innerHTML = "";
-  const keyword = document.getElementById("statsSearch").value.trim();
 
   // 🔥 사람 → 날짜 → 아이템 구조 생성
   const userStats = {};
@@ -127,17 +132,24 @@ function renderStats() {
     });
   });
 
-  // 🔽 사람 이름 기준 출력
+  // 🔽 사람 기준 렌더링 (기존 구조 유지)
   Object.entries(userStats).forEach(([user, dates]) => {
     // 🔍 이름 / 초성 필터
     if (!nameMatches(user, keyword)) return;
 
-    const userHeader = document.createElement("div");
-    userHeader.className = "stat-header";
-    userHeader.textContent = user;
+    const wrapper = document.createElement("div");
+    wrapper.className = "stat-wrapper";
 
-    const userBody = document.createElement("div");
-    userBody.className = "stat-body";
+    // 🔒 접힘 상태 복원
+    const isClosed = localStorage.getItem(`stat-${user}`) === "closed";
+
+    const header = document.createElement("div");
+    header.className = "stat-header";
+    header.textContent = `${isClosed ? "▶" : "▼"} ${user}`;
+
+    const body = document.createElement("div");
+    body.className = "stat-body";
+    body.style.display = isClosed ? "none" : "block";
 
     // 날짜 최신순
     Object.keys(dates)
@@ -146,24 +158,29 @@ function renderStats() {
         const dateTitle = document.createElement("div");
         dateTitle.className = "date-divider";
         dateTitle.textContent = date;
-
-        userBody.appendChild(dateTitle);
+        body.appendChild(dateTitle);
 
         Object.entries(dates[date]).forEach(([item, count]) => {
           const p = document.createElement("p");
           p.textContent = `${item} x${count}`;
-          userBody.appendChild(p);
+          body.appendChild(p);
         });
       });
 
-    // 접기 / 펼치기
-    userHeader.onclick = () => {
-      userBody.style.display =
-        userBody.style.display === "none" ? "block" : "none";
+    // 🔒 접힘 토글 + 저장 (기존 동작 유지)
+    header.onclick = () => {
+      const closed = body.style.display === "none";
+      body.style.display = closed ? "block" : "none";
+      header.textContent = `${closed ? "▼" : "▶"} ${user}`;
+      localStorage.setItem(
+        `stat-${user}`,
+        closed ? "open" : "closed"
+      );
     };
 
-    statsArea.appendChild(userHeader);
-    statsArea.appendChild(userBody);
+    wrapper.appendChild(header);
+    wrapper.appendChild(body);
+    statsArea.appendChild(wrapper);
   });
 }
 
