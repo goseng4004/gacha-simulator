@@ -46,12 +46,7 @@ body {
   width: 62%;
   padding: 24px;
   background: var(--bg-sub);
-  
-  display: flex;
-  flex-direction: column;
-   
-  overflow: hidden;               /*right-panel 자체 스크롤 제거*/
-  height: 100vh;                  /*화면 높이 고정*/
+  overflow-y: auto;
 }
 
 /* =========================
@@ -60,13 +55,13 @@ body {
 .main-title {
   display: flex;
   align-items: baseline;
-  gap: 6px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
 .main-title .author {
   font-size: 13px;
-  color: var(--text-sub); /* 회색 */
+  color: var(--text-sub);
   font-weight: normal;
   white-space: nowrap;
 }
@@ -168,8 +163,6 @@ button:hover {
    로그 영역
 ========================= */
 #logArea {
-  flex: 1;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -286,78 +279,4 @@ button:hover {
   button {
     width: 100%;
   }
-}
-
-/* =========================
-   탭 UI
-========================= */
-.tab-bar {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.tab {
-  flex: 1;
-  padding: 8px;
-  border: 1px solid var(--border);
-  background: #eee;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.tab.active {
-  background: #fff;
-  border-color: #222;
-  font-weight: bold;
-}
-
-/* =========================
-   탭 내용
-========================= */
-.tab-view {
-  display: none;
-}
-
-.tab-view.active {
-  display: block;
-}
-
-/* =========================
-   로그 전용 스크롤
-========================= */
-.scroll-area {
-  max-height: calc(100vh - 180px);
-  overflow-y: auto;
-}
-
-/* =========================
-   통계 전용 스크롤
-========================= */
-#statsView {
-  max-height: calc(100vh - 180px);
-  overflow-y: auto;
-}
-
-/*---스크롤분리---*/
-.stats-panel {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-#statsArea {
-  flex: 1;
-  overflow-y: auto;
-}
-
-/*---통계 접힘 UI---*/
-.stat-header {
-  cursor: pointer;
-  font-weight: bold;
-  margin-top: 8px;
-}
-
-.stat-body {
-  padding-left: 10px;
 }
