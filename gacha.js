@@ -211,6 +211,21 @@ function renderStats() {
 
   statsArea.innerHTML = "";
 
+  /* 🔧 누락된 사용자 통계 생성 */
+  const userStats = {};
+
+  Object.values(logs).forEach(entries => {
+    entries.forEach(entry => {
+      const user = entry.user;
+      userStats[user] ||= {};
+
+      Object.entries(entry.results).forEach(([item, count]) => {
+        userStats[user][item] =
+          (userStats[user][item] || 0) + count;
+      });
+    });
+  });
+
   Object.entries(userStats).forEach(([user, data]) => {
     // 🔍 검색 필터
     if (!user.toLowerCase().includes(keyword)) return;
