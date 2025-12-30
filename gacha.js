@@ -203,21 +203,6 @@ function deleteSelectedLogs() {
 
 /* ---------- 통계 ---------- */
 function renderStats() {
-  // 🔥 통계 재계산
-Object.keys(userStats).forEach(k => delete userStats[k]);
-
-Object.values(logs).forEach(dayLogs => {
-  dayLogs.forEach(entry => {
-    const user = entry.user;
-    userStats[user] ||= {};
-
-    Object.entries(entry.results).forEach(([item, count]) => {
-      userStats[user][item] =
-        (userStats[user][item] || 0) + count;
-    });
-  });
-});
-
   const statsArea = document.getElementById("statsArea");
   const keyword = document
     .getElementById("statsSearch")
@@ -225,60 +210,6 @@ Object.values(logs).forEach(dayLogs => {
     .toLowerCase();
 
   statsArea.innerHTML = "";
-
-  /* 🔧 누락된 사용자 통계 생성 */
-  const userStats = {};
-
-  Object.values(logs).forEach(entries => {
-    entries.forEach(entry => {
-      const user = entry.user;
-      userStats[user] ||= {};
-
-      Object.entries(entry.results).forEach(([item, count]) => {
-        userStats[user][item] =
-          (userStats[user][item] || 0) + count;
-      });
-    });
-  });
-
-  /* ↓↓↓ 기존 코드 그대로 ↓↓↓ */
-  Object.entries(userStats).forEach(([user, data]) => {
-    if (!user.toLowerCase().includes(keyword)) return;
-
-    const wrapper = document.createElement("div");
-    wrapper.className = "stat-wrapper";
-
-    const isClosed = localStorage.getItem(`stat-${user}`) === "closed";
-
-    const header = document.createElement("div");
-    header.className = "stat-header";
-    header.textContent = `${isClosed ? "▶" : "▼"} ${user}`;
-
-    const body = document.createElement("div");
-    body.className = "stat-body";
-    body.style.display = isClosed ? "none" : "block";
-
-    Object.entries(data).forEach(([item, count]) => {
-      const p = document.createElement("p");
-      p.textContent = `${item} x${count}`;
-      body.appendChild(p);
-    });
-
-    header.onclick = () => {
-      const closed = body.style.display === "none";
-      body.style.display = closed ? "block" : "none";
-      header.textContent = `${closed ? "▼" : "▶"} ${user}`;
-      localStorage.setItem(
-        `stat-${user}`,
-        closed ? "open" : "closed"
-      );
-    };
-
-    wrapper.appendChild(header);
-    wrapper.appendChild(body);
-    statsArea.appendChild(wrapper);
-  });
-}
 
   Object.entries(userStats).forEach(([user, data]) => {
     // 🔍 검색 필터
