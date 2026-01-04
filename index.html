@@ -16,7 +16,23 @@
         <span class="author">- @gimkaksa</span>
       </h1>
 
-      <h2>상품 관리</h2>
+      <div class="item-header">
+  <h2>상품 관리</h2>
+  <div class="item-header-buttons">
+    <button onclick="exportItems()">내보내기</button>
+
+    <label class="import-btn">
+      불러오기
+      <input
+        type="file"
+        id="importItemsFile"
+        accept=".json"
+        onchange="importItems()"
+        hidden
+      />
+    </label>
+  </div>
+</div>
       <input id="itemName" placeholder="상품명" />
       <input id="itemRate" type="number" placeholder="확률 (%)" />
       <button onclick="addItem()">추가</button>
