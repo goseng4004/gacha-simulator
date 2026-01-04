@@ -343,3 +343,42 @@ button:hover {
   padding-right: 4px;    /* 스크롤바 겹침 방지 */
 }
 
+/* =========================
+   상품 관리 헤더
+========================= */
+.item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+
+  margin-top: 20px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.item-header h2 {
+  margin: 0;
+  border-bottom: none; /* 기존 h2 밑줄 제거 */
+}
+
+.item-header-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+/* 불러오기 버튼을 일반 버튼처럼 */
+.import-btn {
+  padding: 6px 10px;
+  border: 1px solid #333;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.import-btn:hover {
+  background: #222;
+  color: #fff;
+}
+
