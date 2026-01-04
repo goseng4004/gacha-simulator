@@ -81,35 +81,6 @@ function exportItems() {
   URL.revokeObjectURL(url);
 }
 
-function importItems() {
-  const fileInput = document.getElementById("importItemsFile");
-  const file = fileInput.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    try {
-      const data = JSON.parse(e.target.result);
-
-      if (!Array.isArray(data)) {
-        alert("올바른 상품 리스트 파일이 아닙니다.");
-        return;
-      }
-
-      items = data;
-      selectedIndex = null;
-
-      saveItems();
-      renderItems();
-      alert("상품 리스트를 불러왔습니다.");
-    } catch (err) {
-      alert("파일을 불러오는 중 오류가 발생했습니다.");
-    }
-  };
-
-  reader.readAsText(file);
-  fileInput.value = "";
-}
 
 /* ---------- 갓챠 ---------- */
 function pickItem() {
@@ -310,5 +281,35 @@ function openTab(type) {
     document.querySelector(".tab-bar .tab:nth-child(2)").classList.add("active");
     document.getElementById("statsView").classList.add("active");
   }
+}
+
+function importItems() {
+  const fileInput = document.getElementById("importItemsFile");
+  const file = fileInput.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+
+      if (!Array.isArray(data)) {
+        alert("올바른 상품 리스트 파일이 아닙니다.");
+        return;
+      }
+
+      items = data;
+      selectedIndex = null;
+
+      saveItems();
+      renderItems();
+      alert("상품 리스트를 불러왔습니다.");
+    } catch (err) {
+      alert("파일을 불러오는 중 오류가 발생했습니다.");
+    }
+  };
+
+  reader.readAsText(file);
+  fileInput.value = "";
 }
 
