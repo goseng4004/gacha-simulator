@@ -130,7 +130,7 @@ input {
 
 button {
   padding: 8px 12px;
-  margin-top: 6px;
+  height: 36px;          
   border: 1px solid #333;
   background: #fff;
   border-radius: 4px;
@@ -356,6 +356,13 @@ button:hover {
 .item-header-buttons {
   display: flex;
   gap: 6px;
+}
+
+.item-header h2 {
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+  border-bottom: none;
 }
 
 /* 불러오기 버튼을 일반 버튼처럼 */
