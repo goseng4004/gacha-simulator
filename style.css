@@ -417,3 +417,8 @@ button:hover {
   background: #222;
   color: #fff;
 }
+
+.item-header button,
+.item-header .import-btn {
+  margin-top: 0;
+}
