@@ -68,6 +68,19 @@ function deleteItem() {
   renderItems();
 }
 
+function exportItems() {
+  const data = JSON.stringify(items, null, 2);
+  const blob = new Blob([data], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "gacha_items.json";
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
+
 /* ---------- 갓챠 ---------- */
 function pickItem() {
   const total = items.reduce((s, i) => s + i.rate, 0);
