@@ -360,13 +360,19 @@ button:hover {
 
 /* 불러오기 버튼을 일반 버튼처럼 */
 .import-btn {
-  padding: 6px 10px;
+  display: inline-flex;          
+  align-items: center;           /* 세로 중앙 정렬 */
+  justify-content: center;
+
+  padding: 8px 12px;             /* button과 동일 */
   border: 1px solid #333;
   border-radius: 4px;
   background: #fff;
   cursor: pointer;
   font-size: 13px;
+  line-height: 1;                /* 글자 튐 방지 */
 }
+
 
 .import-btn:hover {
   background: #222;
