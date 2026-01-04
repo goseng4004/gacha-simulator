@@ -145,15 +145,6 @@ button:hover {
 /* =========================
    상품 리스트
 ========================= */
-#itemList {
-  list-style: none;
-  padding: 0;
-  margin-top: 12px;
-
-  max-height: 260px;   
-  overflow-y: auto;     
-}
-
 #itemList li {
   padding: 8px 10px;
   border: 1px solid var(--border);
@@ -382,3 +373,41 @@ button:hover {
   color: #fff;
 }
 
+/* 상품 관리 헤더 전용 */
+.item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+
+  margin-top: 20px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* 상품 관리 h2는 공통 h2 스타일 무시 */
+.item-header h2 {
+  margin: 0;
+  padding: 0;
+  border-bottom: none;
+}
+
+.item-header-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+/* 불러오기 버튼 */
+.import-btn {
+  padding: 6px 10px;
+  border: 1px solid #333;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.import-btn:hover {
+  background: #222;
+  color: #fff;
+}
